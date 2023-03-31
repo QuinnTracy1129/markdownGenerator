@@ -105,7 +105,7 @@ const Initial = () => {
     <div className="markdown-container py-5">
       <MDBCol md={10} className="offset-md-1">
         <MDBCard>
-          <MDBCardHeader>Object to Markdown Converter 1.0</MDBCardHeader>
+          <MDBCardHeader>JSON to Markdown Converter</MDBCardHeader>
           <MDBCardBody>
             <MDBTypography>Paste JSON</MDBTypography>
             <MDBTextArea
@@ -117,8 +117,9 @@ const Initial = () => {
             <MDBBtn onClick={handleGenerate}>show Markdown</MDBBtn>
             <MDBTypography className="mb-0 mt-2">
               <i>
-                Usage may differ depending on data, this is based on a set of
-                response and may not cover all kinds of response yet.
+                Usage may differ depending on data, this is based on a
+                particular set of response and may not cover all kinds of
+                responses yet.
               </i>
             </MDBTypography>
           </MDBCardFooter>

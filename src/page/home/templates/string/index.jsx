@@ -28,7 +28,7 @@ export default function HandleString({
   };
 
   return (
-    <div key={`${data.parameter}-${index}`} className="mb-3">
+    <div className="mb-3">
       <MDBTypography className="mb-0">{data.parameter}</MDBTypography>
       <MDBTable responsive className="text-center">
         <MDBTableHead>

@@ -4,7 +4,6 @@ import Routers from "./Routes";
 import { ToastContainer } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { REFRESH } from "./redux/slices/persons/auth";
-import { BROWSE } from "./redux/slices/persons/rubrics";
 import Company from "./fakeDb/company";
 // import DevTools from "devtools-detect";
 
@@ -17,8 +16,6 @@ const App = () => {
     if (token && !auth._id) {
       dispatch(REFRESH(`QTracy ${token}`));
     }
-
-    dispatch(BROWSE());
   }, [auth, token, dispatch]);
 
   // useEffect(() => {

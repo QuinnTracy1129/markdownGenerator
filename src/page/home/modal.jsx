@@ -69,7 +69,7 @@ export default function MarkdownModal({ datas, setDatas, modal, setModal }) {
       <MDBModalDialog size="fullscreen">
         <MDBModalContent>
           <MDBModalHeader>
-            <MDBModalTitle>Edit your markdown</MDBModalTitle>
+            <MDBModalTitle>Configure and Finalize your markdown</MDBModalTitle>
             <MDBBtn
               className="btn-close"
               color="none"
@@ -82,6 +82,7 @@ export default function MarkdownModal({ datas, setDatas, modal, setModal }) {
                 case "boolean":
                   return (
                     <HandleBoolean
+                      key={`${data.parameter}-${index}-boolean`}
                       isResponse={isResponse}
                       data={data}
                       index={index}
@@ -94,6 +95,7 @@ export default function MarkdownModal({ datas, setDatas, modal, setModal }) {
                 case "string":
                   return (
                     <HandleString
+                      key={`${data.parameter}-${index}-${data.type}`}
                       isResponse={isResponse}
                       data={data}
                       index={index}
@@ -106,6 +108,7 @@ export default function MarkdownModal({ datas, setDatas, modal, setModal }) {
                 case "object":
                   return (
                     <HandleObject
+                      key={`${data.parameter}-${index}-${data.type}`}
                       isResponse={isResponse}
                       data={data}
                       index={index}

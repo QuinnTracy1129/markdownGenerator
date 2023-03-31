@@ -27,7 +27,7 @@ export default function HandleObject({
   setDatas,
 }) {
   return (
-    <div key={`${data.parameter}-${index}`} className="mb-3">
+    <div key={`${data.parameter}-${index}-${data.type}`} className="mb-3">
       <MDBTypography className="mb-0">{data.parameter}</MDBTypography>
       <MDBTable responsive className="text-center">
         <MDBTableHead>
