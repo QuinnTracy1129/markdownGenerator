@@ -1,75 +1,74 @@
 import React, { useState } from "react";
 import { MDBBtn, MDBSwitch, MDBIcon, MDBInputGroup } from "mdb-react-ui-kit";
 
-export default function ObjectCard({
+export default function ModalCard({
+  isResponse,
   data,
+  index,
   datas,
   setDatas,
-  child,
+  parameter,
   cIndex,
-  index,
-  isResponse,
 }) {
   const [str, setStr] = useState("");
-
-  const handleParameter = (data, dataType, child, childType) => {
-    var _child = child;
-
-    if (childType === "array") {
-      _child = `${child}[]`;
-    }
-
-    if (dataType === "object") {
-      return `${data}.${_child}`;
-    } else {
-      return `${data}[].${_child}`;
-    }
-  };
 
   const handleSubmit = e => {
     e.preventDefault();
 
     const newArr = [...datas];
-    newArr[index].children[cIndex].description = str;
+
+    if (parameter) {
+      newArr[index].children[cIndex].description = str;
+    } else {
+      newArr[index].description = str;
+    }
+
     setDatas(newArr);
+  };
+
+  const handleParameter = () => {
+    var _parameter = data.parameter;
+
+    if (data.type.includes("<")) {
+      _parameter += "[]";
+    }
+
+    if (parameter) {
+      _parameter = `${parameter}.${_parameter}`;
+    }
+
+    return _parameter;
   };
 
   return (
     <tr>
-      <td>
-        {handleParameter(
-          data.parameter,
-          data.type,
-          child.parameter,
-          child.type
-        )}
-      </td>
+      <td>{handleParameter()}</td>
       {!isResponse && (
         <td>
           <MDBSwitch
             onChange={() => {
               const newArr = [...datas];
-              newArr[index].children[cIndex].mandatory = !child.mandatory;
+              newArr[index].mandatory = !data.mandatory;
               setDatas(newArr);
             }}
-            checked={child.mandatory}
+            checked={data.mandatory}
           />
         </td>
       )}
-      <td>{child.type}</td>
+      <td>{data.type}</td>
       <td>-</td>
       <td>-</td>
       <td>
         <form onSubmit={handleSubmit}>
-          <MDBInputGroup className="mb-3">
+          <MDBInputGroup>
             <input
               className="form-control"
               placeholder="Description"
               value={str || data.description}
               onChange={e => setStr(e.target.value)}
             />
-            {str !== child.description && (
-              <MDBBtn outline>
+            {str !== data.description && (
+              <MDBBtn type="submit" outline>
                 <MDBIcon icon="pen" />
               </MDBBtn>
             )}

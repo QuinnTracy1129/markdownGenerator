@@ -9,45 +9,34 @@ import {
   MDBModalBody,
   MDBModalFooter,
   MDBBtnGroup,
+  MDBTable,
+  MDBTableHead,
+  MDBTableBody,
 } from "mdb-react-ui-kit";
 import { toast } from "react-toastify";
-import HandleBoolean from "./templates/boolean";
-import HandleObject from "./templates/objects";
-import HandleString from "./templates/string";
+import ModalCard from "./card";
 
 export default function MarkdownModal({ datas, setDatas, modal, setModal }) {
-  const [isResponse, setIsReponse] = useState(false);
+  const [isResponse, setIsReponse] = useState(true);
 
   const handleFormat = () => {
+    console.log(datas);
     let table = "";
 
     datas.map(data => {
-      switch (data.type) {
-        case "number":
-        case "string":
-        case "boolean":
-          table += `| **${data.parameter}**${
-            !isResponse
-              ? ` | ${data.mandatory ? "Mandatory" : "Optional"} `
-              : ""
-          } | ${data.type} | - | - | ${data.description} |\n`;
-          break;
+      let _parameter = data.parameter;
 
+      switch (data.type) {
+        case "array":
         case "object":
           data.children.map(child => {
-            table += `| **${data.parameter}.${child.parameter}**${
-              !isResponse
-                ? ` | ${child.mandatory ? "Mandatory" : "Optional"} `
-                : ""
-            } | ${child.type} | - | - | ${child.description} |\n`;
-          });
-          break;
+            let _childParameter = child.parameter;
 
-        case "array":
-          data.children.map(child => {
-            table += `| **${data.parameter}[].${child.parameter}${
-              child.type === "array" ? "[]" : ""
-            }**${
+            if (child.type.includes("array")) {
+              _childParameter += "[]";
+            }
+
+            table += `| **${_parameter}.${_childParameter}**${
               !isResponse
                 ? ` | ${child.mandatory ? "Mandatory" : "Optional"} `
                 : ""
@@ -56,12 +45,21 @@ export default function MarkdownModal({ datas, setDatas, modal, setModal }) {
           break;
 
         default:
+          if (data.type.includes("<")) {
+            _parameter += "[]";
+          }
+
+          table += `| **${_parameter}**${
+            !isResponse
+              ? ` | ${data.mandatory ? "Mandatory" : "Optional"} `
+              : ""
+          } | ${data.type} | - | - | ${data.description} |\n`;
           break;
       }
     });
 
     navigator.clipboard.writeText(table);
-    toast.success("Text Copied to Clipboard.");
+    toast.success("Markdown Copied to Clipboard.");
   };
 
   return (
@@ -77,60 +75,54 @@ export default function MarkdownModal({ datas, setDatas, modal, setModal }) {
             />
           </MDBModalHeader>
           <MDBModalBody className="text-start">
-            {datas.map((data, index) => {
-              switch (data.type) {
-                case "boolean":
-                  return (
-                    <HandleBoolean
-                      key={`${data.parameter}-${index}-boolean`}
-                      isResponse={isResponse}
-                      data={data}
-                      index={index}
-                      datas={datas}
-                      setDatas={setDatas}
-                    />
-                  );
+            <MDBTable className="text-center" small>
+              <MDBTableHead>
+                <tr>
+                  <th>Parameter</th>
+                  {!isResponse && <th>Mandatory/Optional</th>}
+                  <th>Datatype</th>
+                  <th>Min Length</th>
+                  <th>Max Length</th>
+                  <th>Description</th>
+                </tr>
+              </MDBTableHead>
+              <MDBTableBody>
+                {datas.map((data, index) => {
+                  switch (data.type) {
+                    case "array":
+                    case "object":
+                      return data.children.map((child, cIndex) => (
+                        <ModalCard
+                          key={`${data.parameter}-${index}-${data.type}-${child.parameter}-${cIndex}-${child.type}`}
+                          isResponse={isResponse}
+                          parameter={data.parameter}
+                          data={child}
+                          index={index}
+                          cIndex={cIndex}
+                          datas={datas}
+                          setDatas={setDatas}
+                        />
+                      ));
 
-                case "number":
-                case "string":
-                  return (
-                    <HandleString
-                      key={`${data.parameter}-${index}-${data.type}`}
-                      isResponse={isResponse}
-                      data={data}
-                      index={index}
-                      datas={datas}
-                      setDatas={setDatas}
-                    />
-                  );
-
-                case "array":
-                case "object":
-                  return (
-                    <HandleObject
-                      key={`${data.parameter}-${index}-${data.type}`}
-                      isResponse={isResponse}
-                      data={data}
-                      index={index}
-                      datas={datas}
-                      setDatas={setDatas}
-                    />
-                  );
-
-                default:
-                  return `${data.type} is not yet listed :(`;
-              }
-            })}
+                    default:
+                      return (
+                        <ModalCard
+                          key={`${data.parameter}-${index}-${data.type}`}
+                          isResponse={isResponse}
+                          data={data}
+                          index={index}
+                          datas={datas}
+                          setDatas={setDatas}
+                        />
+                      );
+                  }
+                })}
+              </MDBTableBody>
+            </MDBTable>
           </MDBModalBody>
 
           <MDBModalFooter className="d-flex justify-content-between">
             <MDBBtnGroup>
-              <MDBBtn
-                outline={isResponse === false}
-                onClick={() => setIsReponse(false)}
-              >
-                request
-              </MDBBtn>
               <MDBBtn
                 outline={isResponse === true}
                 onClick={() => setIsReponse(true)}
@@ -138,13 +130,14 @@ export default function MarkdownModal({ datas, setDatas, modal, setModal }) {
               >
                 response
               </MDBBtn>
+              <MDBBtn
+                outline={isResponse === false}
+                onClick={() => setIsReponse(false)}
+              >
+                request
+              </MDBBtn>
             </MDBBtnGroup>
-            <MDBBtn
-              //   onClick={() => {
-              //     console.log(datas);
-              //   }}
-              onClick={handleFormat}
-            >
+            <MDBBtn color="success" onClick={handleFormat}>
               copy to clipboard
             </MDBBtn>
           </MDBModalFooter>

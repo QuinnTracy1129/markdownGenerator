@@ -5,6 +5,7 @@ import {
   MDBCardBody,
   MDBCardFooter,
   MDBCardHeader,
+  MDBCardText,
   MDBCol,
   MDBTextArea,
   MDBTypography,
@@ -45,25 +46,32 @@ const Initial = () => {
           };
 
           if (Array.isArray(json[key])) {
-            const children = Object.keys(json[key][0]);
+            const initial = json[key][0];
 
-            form.type = "array";
-            form.children = children.map(child => {
-              var _form = {
-                parameter: child,
-                type: typeof json[key][0][child],
-                mandatory: false,
-                description: "",
-              };
+            if (typeof initial === "object") {
+              form.type = "array";
 
-              if (_form.type === "object") {
-                if (Array.isArray(json[key][0][child])) {
-                  _form.type = "array";
+              const children = Object.keys(initial);
+
+              form.children = children.map(child => {
+                var _form = {
+                  parameter: child,
+                  type: typeof initial[child],
+                  mandatory: false,
+                  description: "",
+                };
+
+                if (_form.type === "object") {
+                  if (Array.isArray(initial[child])) {
+                    _form.type = "array";
+                  }
                 }
-              }
 
-              return _form;
-            });
+                return _form;
+              });
+            } else {
+              form.type = `array<${typeof initial}>`;
+            }
           } else if (form.type === "object") {
             const children = Object.keys(json[key]);
 
@@ -77,7 +85,11 @@ const Initial = () => {
 
               if (_form.type === "object") {
                 if (Array.isArray(json[key][child])) {
-                  _form.type = "array";
+                  if (typeof json[key][child][0] === "object") {
+                    _form.type = "array";
+                  } else {
+                    _form.type = `array<${typeof json[key][child][0]}>`;
+                  }
                 }
               }
 
@@ -87,6 +99,8 @@ const Initial = () => {
 
           return form;
         });
+
+        // console.log(datas);
 
         setDatas(datas);
         setModal(true);
@@ -104,25 +118,49 @@ const Initial = () => {
   return (
     <div className="markdown-container py-5">
       <MDBCol md={10} className="offset-md-1">
-        <MDBCard>
+        <MDBCard shadow="0" border="primary" background="light">
           <MDBCardHeader>JSON to Markdown Converter</MDBCardHeader>
           <MDBCardBody>
-            <MDBTypography>Paste JSON</MDBTypography>
+            <MDBTypography className="mb-0">
+              Paste your JSON below
+            </MDBTypography>
+            <MDBTypography>
+              <small>
+                <i>
+                  <a target="_blank" href="https://codebeautify.org/jsonviewer">
+                    Beautify your JSON
+                  </a>
+                  &nbsp;for better experience
+                </i>
+              </small>
+            </MDBTypography>
             <MDBTextArea
               id="text-obj"
               onChange={e => setText(e.target.value)}
+              rows={3}
             />
           </MDBCardBody>
           <MDBCardFooter>
-            <MDBBtn onClick={handleGenerate}>show Markdown</MDBBtn>
-            <MDBTypography className="mb-0 mt-2">
+            <MDBBtn color="info" onClick={handleGenerate}>
+              configure Markdown
+            </MDBBtn>
+          </MDBCardFooter>
+        </MDBCard>
+        <MDBCard
+          shadow="0"
+          border="primary"
+          background="light"
+          className="mt-3"
+        >
+          <MDBCardBody className="py-1">
+            <MDBCardText>
               <i>
                 Usage may differ depending on data, this is based on a
                 particular set of response and may not cover all kinds of
                 responses yet.
               </i>
-            </MDBTypography>
-          </MDBCardFooter>
+            </MDBCardText>
+          </MDBCardBody>
         </MDBCard>
       </MDBCol>
       <MarkdownModal
