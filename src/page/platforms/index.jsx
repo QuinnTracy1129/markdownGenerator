@@ -4,9 +4,6 @@ import TopNavigation from "../../components/navbar";
 import { Outlet, useNavigate } from "react-router-dom";
 import Sidebar from "../../components/sidebar";
 import { useSelector } from "react-redux";
-import { socket } from "../../components/utilities";
-import { toast } from "react-toastify";
-import Company from "../../fakeDb/company";
 
 const Dashboard = () => {
   const navigate = useNavigate(),
@@ -45,27 +42,6 @@ const Dashboard = () => {
     window.addEventListener("resize", debounceResize);
 
     return () => window.removeEventListener("resize", debounceResize);
-  }, []);
-
-  useEffect(() => {
-    document.title = `${Company.name} | Dashboard`;
-    if (auth._id) {
-      socket.emit("join_room", auth._id);
-    }
-  }, [auth]);
-
-  useEffect(() => {
-    socket.on("logout", () => {
-      toast.info("You were logged out from a different device.");
-      localStorage.removeItem("token");
-      setTimeout(() => {
-        window.location.href = "/login";
-      }, 2500);
-    });
-
-    return () => {
-      socket.off("logout");
-    };
   }, []);
 
   useEffect(() => {

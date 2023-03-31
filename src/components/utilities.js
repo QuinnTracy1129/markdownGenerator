@@ -1,6 +1,5 @@
 import axios from "axios";
 import { toast } from "react-toastify";
-import io from "socket.io-client";
 import DefaultUser from "../assets/images/default.jpg";
 import ErrorNull from "../assets/images/404.gif";
 import ErrorBadRequest from "../assets/images/400.png";
@@ -12,8 +11,6 @@ export const ErrorFalse = ErrorBadRequest;
 export const BASE = "initial";
 export const ENDPOINT = "http://localhost:5000";
 // export const ENDPOINT = window.location.origin;
-
-export const socket = io.connect(ENDPOINT);
 
 export const register = data =>
   axios

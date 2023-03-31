@@ -8,7 +8,7 @@ import {
   MDBListGroupItem,
   MDBBtn,
 } from "mdb-react-ui-kit";
-import { PresetUser, ENDPOINT, BASE, socket } from "../../utilities";
+import { PresetUser, ENDPOINT, BASE } from "../../utilities";
 import { useSelector } from "react-redux";
 import axios from "axios";
 
@@ -50,7 +50,6 @@ const NavbarProfile = () => {
           },
         })
         .then(() => {
-          socket.emit("logout", auth._id);
           setTimeout(() => {
             window.location.href = "/login";
           }, 2500);

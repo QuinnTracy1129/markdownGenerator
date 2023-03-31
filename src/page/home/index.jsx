@@ -102,7 +102,7 @@ const Initial = () => {
   };
 
   return (
-    <div className="markdown-container">
+    <div className="markdown-container py-5">
       <MDBCol md={10} className="offset-md-1">
         <MDBCard>
           <MDBCardHeader>Object to Markdown Converter 1.0</MDBCardHeader>

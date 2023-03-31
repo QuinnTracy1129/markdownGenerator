@@ -8,196 +8,23 @@ import {
   MDBModalTitle,
   MDBModalBody,
   MDBModalFooter,
-  MDBTable,
-  MDBTableHead,
-  MDBTableBody,
   MDBBtnGroup,
-  MDBSwitch,
-  MDBTypography,
-  MDBIcon,
-  MDBInputGroup,
 } from "mdb-react-ui-kit";
 import { toast } from "react-toastify";
-
-const HandleBoolean = ({ isResponse, data, index, datas, setDatas }) => {
-  const [str, setStr] = useState("");
-
-  return (
-    <div key={`${data.parameter}-${index}`} className="mb-3">
-      <MDBTypography className="mb-0">{data.parameter}</MDBTypography>
-      <MDBTable responsive className="text-center">
-        <MDBTableHead>
-          <tr>
-            <th>Parameter</th>
-            {!isResponse && <th>Mandatory/Optional</th>}
-            <th>Datatype</th>
-            <th>Description</th>
-          </tr>
-        </MDBTableHead>
-        <MDBTableBody>
-          <tr>
-            <td>{data.parameter}</td>
-            {!isResponse && (
-              <td>
-                <MDBSwitch
-                  onChange={() => {
-                    const newArr = [...datas];
-                    newArr[index].mandatory = !data.mandatory;
-                    setDatas(newArr);
-                  }}
-                  checked={data.mandatory}
-                />
-              </td>
-            )}
-            <td>{data.type}</td>
-            <td>
-              <MDBInputGroup className="mb-3">
-                <input
-                  className="form-control"
-                  placeholder="Description"
-                  value={str || data.description}
-                  onChange={e => setStr(e.target.value)}
-                />
-                {str !== data.description && (
-                  <MDBBtn
-                    outline
-                    onClick={() => {
-                      const newArr = [...datas];
-                      newArr[index].description = str;
-                      setDatas(newArr);
-                    }}
-                  >
-                    <MDBIcon icon="pen" />
-                  </MDBBtn>
-                )}
-              </MDBInputGroup>
-            </td>
-          </tr>
-        </MDBTableBody>
-      </MDBTable>
-    </div>
-  );
-};
-
-const ObjectCard = ({
-  data,
-  datas,
-  setDatas,
-  child,
-  cIndex,
-  index,
-  isResponse,
-}) => {
-  const [str, setStr] = useState("");
-
-  const handleParameter = (data, dataType, child, childType) => {
-    var _child = child;
-
-    if (childType === "array") {
-      _child = `${child}[]`;
-    }
-
-    if (dataType === "object") {
-      return `${data}.${_child}`;
-    } else {
-      return `${data}[].${_child}`;
-    }
-  };
-
-  return (
-    <tr>
-      <td>
-        {handleParameter(
-          data.parameter,
-          data.type,
-          child.parameter,
-          child.type
-        )}
-      </td>
-      {!isResponse && (
-        <td>
-          <MDBSwitch
-            onChange={() => {
-              const newArr = [...datas];
-              newArr[index].children[cIndex].mandatory = !child.mandatory;
-              setDatas(newArr);
-            }}
-            checked={child.mandatory}
-          />
-        </td>
-      )}
-      <td>{child.type}</td>
-      <td>-</td>
-      <td>-</td>
-      <td>
-        <MDBInputGroup className="mb-3">
-          <input
-            className="form-control"
-            placeholder="Description"
-            value={str || data.description}
-            onChange={e => setStr(e.target.value)}
-          />
-          {str !== child.description && (
-            <MDBBtn
-              outline
-              onClick={() => {
-                const newArr = [...datas];
-                newArr[index].children[cIndex].description = str;
-                setDatas(newArr);
-              }}
-            >
-              <MDBIcon icon="pen" />
-            </MDBBtn>
-          )}
-        </MDBInputGroup>
-      </td>
-    </tr>
-  );
-};
-
-const HandleObject = ({ isResponse, data, index, datas, setDatas }) => {
-  return (
-    <div key={`${data.parameter}-${index}`} className="mb-3">
-      <MDBTypography className="mb-0">{data.parameter}</MDBTypography>
-      <MDBTable responsive className="text-center">
-        <MDBTableHead>
-          <tr>
-            <th>Parameter</th>
-            {!isResponse && <th>Mandatory/Optional</th>}
-            <th>Datatype</th>
-            <th>Min Length</th>
-            <th>Max Length</th>
-            <th>Description</th>
-          </tr>
-        </MDBTableHead>
-        <MDBTableBody>
-          {data.children.map((child, cIndex) => (
-            <ObjectCard
-              key={`${child.parameter}-${index}-${cIndex}`}
-              data={data}
-              datas={datas}
-              setDatas={setDatas}
-              child={child}
-              cIndex={cIndex}
-              index={index}
-              isResponse={isResponse}
-            />
-          ))}
-        </MDBTableBody>
-      </MDBTable>
-    </div>
-  );
-};
+import HandleBoolean from "./templates/boolean";
+import HandleObject from "./templates/objects";
+import HandleString from "./templates/string";
 
 export default function MarkdownModal({ datas, setDatas, modal, setModal }) {
   const [isResponse, setIsReponse] = useState(false);
 
   const handleFormat = () => {
-    console.log(datas);
     let table = "";
 
     datas.map(data => {
       switch (data.type) {
+        case "number":
+        case "string":
         case "boolean":
           table += `| **${data.parameter}**${
             !isResponse
@@ -243,6 +70,11 @@ export default function MarkdownModal({ datas, setDatas, modal, setModal }) {
         <MDBModalContent>
           <MDBModalHeader>
             <MDBModalTitle>Edit your markdown</MDBModalTitle>
+            <MDBBtn
+              className="btn-close"
+              color="none"
+              onClick={() => setModal(false)}
+            />
           </MDBModalHeader>
           <MDBModalBody className="text-start">
             {datas.map((data, index) => {
@@ -250,6 +82,18 @@ export default function MarkdownModal({ datas, setDatas, modal, setModal }) {
                 case "boolean":
                   return (
                     <HandleBoolean
+                      isResponse={isResponse}
+                      data={data}
+                      index={index}
+                      datas={datas}
+                      setDatas={setDatas}
+                    />
+                  );
+
+                case "number":
+                case "string":
+                  return (
+                    <HandleString
                       isResponse={isResponse}
                       data={data}
                       index={index}
