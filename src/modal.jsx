@@ -39,7 +39,7 @@ export default function MarkdownModal({ datas, setDatas, modal, setModal }) {
 
             table += `| **${_parameter}.${_childParameter}**${
               !isResponse
-                ? ` | ${child.mandatory ? "Mandatory" : "Optional"} `
+                ? ` | ${child.mandatory ? "Mandatory" : "Optional"}`
                 : ""
             } | ${_type} | - | - | ${child.description} |\n`;
 
