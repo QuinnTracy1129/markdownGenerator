@@ -41,6 +41,8 @@ export default function MarkdownModal({ datas, setDatas, modal, setModal }) {
                 ? ` | ${child.mandatory ? "Mandatory" : "Optional"} `
                 : ""
             } | ${child.type} | - | - | ${child.description} |\n`;
+
+            return true;
           });
           break;
 
@@ -56,6 +58,8 @@ export default function MarkdownModal({ datas, setDatas, modal, setModal }) {
           } | ${data.type} | - | - | ${data.description} |\n`;
           break;
       }
+
+      return true;
     });
 
     navigator.clipboard.writeText(table);

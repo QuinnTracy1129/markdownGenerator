@@ -1,48 +1,181 @@
-import React, { useEffect } from "react";
-import { BrowserRouter } from "react-router-dom";
-import Routers from "./Routes";
+import React, { useState } from "react";
+import {
+  MDBBtn,
+  MDBCard,
+  MDBCardBody,
+  MDBCardFooter,
+  MDBCardHeader,
+  MDBCardText,
+  MDBCol,
+  MDBTextArea,
+  MDBTypography,
+} from "mdb-react-ui-kit";
+import { toast } from "react-toastify";
 import { ToastContainer } from "react-toastify";
-import { useDispatch, useSelector } from "react-redux";
-import { REFRESH } from "./redux/slices/persons/auth";
-import Company from "./fakeDb/company";
+import MarkdownModal from "./modal";
 // import DevTools from "devtools-detect";
 
 const App = () => {
-  const { theme, token, auth } = useSelector(state => state.auth),
-    dispatch = useDispatch();
+  const [text, setText] = useState(""),
+    [datas, setDatas] = useState([]),
+    [modal, setModal] = useState(false);
 
-  useEffect(() => {
-    document.title = Company.name;
-    if (token && !auth._id) {
-      dispatch(REFRESH(`QTracy ${token}`));
+  const isJSON = str => {
+    try {
+      JSON.parse(str);
+    } catch (error) {
+      return false;
     }
-  }, [auth, token, dispatch]);
 
-  // useEffect(() => {
-  // if (localStorage.getItem("rush_reload") === "true") {
-  //   window.location.reload();
-  // }
-  // if (DevTools.isOpen) {
-  //   localStorage.setItem("rush_reload", true);
-  //   console.log("You shouldnt be here");
-  //   window.location.reload();
-  // }
-  // window.addEventListener("devtoolschange", e => {
-  //   if (e.detail.isOpen) {
-  //     localStorage.setItem("rush_reload", true);
-  //     console.log("You shouldnt be here");
-  //     window.location.reload();
-  //   }
-  // });
-  // }, []);
+    return true;
+  };
+
+  const handleGenerate = () => {
+    const input = document.getElementById("text-obj");
+
+    if (text) {
+      if (isJSON(text)) {
+        const json = JSON.parse(text),
+          keys = Object.keys(json);
+
+        var datas = keys.map(key => {
+          var form = {
+            parameter: key,
+            type: typeof json[key],
+            mandatory: false,
+            description: "",
+          };
+
+          if (Array.isArray(json[key])) {
+            const initial = json[key][0];
+
+            if (typeof initial === "object") {
+              form.type = "array";
+
+              const children = Object.keys(initial);
+
+              form.children = children.map(child => {
+                var _form = {
+                  parameter: child,
+                  type: typeof initial[child],
+                  mandatory: false,
+                  description: "",
+                };
+
+                if (_form.type === "object") {
+                  if (Array.isArray(initial[child])) {
+                    _form.type = "array";
+                  }
+                }
+
+                return _form;
+              });
+            } else {
+              form.type = `array<${typeof initial}>`;
+            }
+          } else if (form.type === "object") {
+            const children = Object.keys(json[key]);
+
+            form.children = children.map(child => {
+              var _form = {
+                parameter: child,
+                type: typeof json[key][child],
+                mandatory: false,
+                description: "",
+              };
+
+              if (_form.type === "object") {
+                if (Array.isArray(json[key][child])) {
+                  if (typeof json[key][child][0] === "object") {
+                    _form.type = "array";
+                  } else {
+                    _form.type = `array<${typeof json[key][child][0]}>`;
+                  }
+                }
+              }
+
+              return _form;
+            });
+          }
+
+          return form;
+        });
+
+        // console.log(datas);
+
+        setDatas(datas);
+        setModal(true);
+      } else {
+        input.focus();
+        toast.warn("Invalid Object, must be a proper JSON format!");
+      }
+    } else {
+      input.focus();
+
+      toast.warn("Paste an Object first!");
+    }
+  };
 
   return (
-    <BrowserRouter>
-      <main className="h-100">
-        <Routers />
-      </main>
+    <div className="markdown-container py-5">
+      <MDBCol md={10} className="offset-md-1">
+        <MDBCard shadow="0" border="primary" background="light">
+          <MDBCardHeader>JSON to Markdown Converter</MDBCardHeader>
+          <MDBCardBody>
+            <MDBTypography className="mb-0">
+              Paste your JSON below
+            </MDBTypography>
+            <MDBTypography>
+              <small>
+                <i>
+                  <a
+                    rel="noreferrer"
+                    target="_blank"
+                    href="https://codebeautify.org/jsonviewer"
+                  >
+                    Beautify your JSON
+                  </a>
+                  &nbsp;for better experience
+                </i>
+              </small>
+            </MDBTypography>
+            <MDBTextArea
+              id="text-obj"
+              onChange={e => setText(e.target.value)}
+              rows={3}
+            />
+          </MDBCardBody>
+          <MDBCardFooter>
+            <MDBBtn color="info" onClick={handleGenerate}>
+              configure Markdown
+            </MDBBtn>
+          </MDBCardFooter>
+        </MDBCard>
+        <MDBCard
+          shadow="0"
+          border="primary"
+          background="light"
+          className="mt-3"
+        >
+          <MDBCardBody className="py-1">
+            <MDBCardText>
+              <i>
+                Usage may differ depending on data, this is based on a
+                particular set of response and may not cover all kinds of
+                responses yet.
+              </i>
+            </MDBCardText>
+          </MDBCardBody>
+        </MDBCard>
+      </MDBCol>
+      <MarkdownModal
+        datas={datas}
+        setDatas={setDatas}
+        modal={modal}
+        setModal={setModal}
+      />
       <ToastContainer
-        theme={theme.color}
+        theme="dark"
         position="bottom-center"
         autoClose={5000}
         hideProgressBar={false}
@@ -52,7 +185,7 @@ const App = () => {
         pauseOnFocusLoss={false}
         pauseOnHover={false}
       />
-    </BrowserRouter>
+    </div>
   );
 };
 

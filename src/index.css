@@ -4,6 +4,15 @@ html {
   scroll-behavior: smooth;
 }
 
+.markdown-container {
+  background-color: grey;
+  min-height: 100vh;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  text-align: center;
+}
+
 .special-header {
   font-family: "Poppins", sans-serif;
   font-size: 12px;
