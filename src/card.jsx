@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { MDBBtn, MDBSwitch, MDBIcon, MDBInputGroup } from "mdb-react-ui-kit";
+import Swal from "sweetalert2";
+import { toast } from "react-toastify";
 
 export default function ModalCard({
   isResponse,
@@ -40,6 +42,72 @@ export default function ModalCard({
     return _parameter;
   };
 
+  const handleClicks = async key => {
+    let action = "";
+
+    switch (key) {
+      case "min":
+        action = "Min Length";
+        break;
+
+      case "max":
+        action = "Max Length";
+        break;
+
+      default:
+        action = "Datatype";
+        break;
+    }
+
+    const { value: str } = await Swal.fire({
+      title: `Update ${data.parameter} ${action}`,
+      input: "text",
+      inputValue: data[key],
+      showCancelButton: true,
+      inputValidator: value => {
+        if (key === "type") {
+          if (!value) {
+            return "You need to write something!";
+          }
+        }
+
+        if (key === "min") {
+          if (Number(value) < 0) {
+            return "Cannot set minimum less than 0!";
+          }
+
+          if (data.max) {
+            if (Number(value) > Number(data.max)) {
+              return "Minimum cannot be higher than maximum!";
+            }
+          }
+        }
+
+        if (key === "max") {
+          if (data.min) {
+            if (Number(value) < Number(data.min)) {
+              return "Maximum cannot be lower than minimum!";
+            }
+          }
+        }
+      },
+    });
+
+    if (str) {
+      const newArr = [...datas];
+
+      if (parameter) {
+        newArr[index].children[cIndex][key] = str;
+      } else {
+        newArr[index][key] = str;
+      }
+
+      setDatas(newArr);
+
+      toast.success("Updated Successfully!");
+    }
+  };
+
   return (
     <tr>
       <td>{handleParameter()}</td>
@@ -55,9 +123,21 @@ export default function ModalCard({
           />
         </td>
       )}
-      <td>{data.type}</td>
-      <td>-</td>
-      <td>-</td>
+      <td>
+        <span onClick={() => handleClicks("type")} className="cursor-pointer">
+          {data.type}
+        </span>
+      </td>
+      <td>
+        <span onClick={() => handleClicks("min")} className="cursor-pointer">
+          {data.min || "-"}
+        </span>
+      </td>
+      <td>
+        <span onClick={() => handleClicks("max")} className="cursor-pointer">
+          {data.max || "-"}
+        </span>
+      </td>
       <td>
         <form onSubmit={handleSubmit}>
           <MDBInputGroup>

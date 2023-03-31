@@ -41,7 +41,9 @@ export default function MarkdownModal({ datas, setDatas, modal, setModal }) {
               !isResponse
                 ? ` | ${child.mandatory ? "Mandatory" : "Optional"}`
                 : ""
-            } | ${_type} | - | - | ${child.description} |\n`;
+            } | ${_type} | ${child.min || "-"} | ${child.max || "-"} | ${
+              child.description
+            } |\n`;
 
             return true;
           });
@@ -56,7 +58,9 @@ export default function MarkdownModal({ datas, setDatas, modal, setModal }) {
             !isResponse
               ? ` | ${data.mandatory ? "Mandatory" : "Optional"} `
               : ""
-          } | ${_type} | - | - | ${data.description} |\n`;
+          } | ${_type} | ${data.min || "-"} | ${data.max || "-"} | ${
+            data.description
+          } |\n`;
           break;
       }
 
