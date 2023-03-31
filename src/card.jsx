@@ -116,7 +116,13 @@ export default function ModalCard({
           <MDBSwitch
             onChange={() => {
               const newArr = [...datas];
-              newArr[index].mandatory = !data.mandatory;
+
+              if (parameter) {
+                newArr[index].children[cIndex].mandatory = !data.mandatory;
+              } else {
+                newArr[index].mandatory = !data.mandatory;
+              }
+
               setDatas(newArr);
             }}
             checked={data.mandatory}
