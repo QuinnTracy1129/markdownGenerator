@@ -24,7 +24,8 @@ export default function MarkdownModal({ datas, setDatas, modal, setModal }) {
     let table = "";
 
     datas.map(data => {
-      let _parameter = data.parameter;
+      let _parameter = data.parameter,
+        _type = "`" + data.type + "`";
 
       switch (data.type) {
         case "array":
@@ -40,7 +41,7 @@ export default function MarkdownModal({ datas, setDatas, modal, setModal }) {
               !isResponse
                 ? ` | ${child.mandatory ? "Mandatory" : "Optional"} `
                 : ""
-            } | ${child.type} | - | - | ${child.description} |\n`;
+            } | ${_type} | - | - | ${child.description} |\n`;
 
             return true;
           });
@@ -55,7 +56,7 @@ export default function MarkdownModal({ datas, setDatas, modal, setModal }) {
             !isResponse
               ? ` | ${data.mandatory ? "Mandatory" : "Optional"} `
               : ""
-          } | ${data.type} | - | - | ${data.description} |\n`;
+          } | ${_type} | - | - | ${data.description} |\n`;
           break;
       }
 
