@@ -107,12 +107,12 @@ const App = () => {
         setModal(true);
       } else {
         input.focus();
-        toast.warn("Invalid Object, must be a proper JSON format!");
+        toast.warn("Invalid JSON format!");
       }
     } else {
       input.focus();
 
-      toast.warn("Paste an Object first!");
+      toast.warn("Paste a JSON first!");
     }
   };
 
