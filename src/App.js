@@ -161,6 +161,7 @@ const App = () => {
         </MDBCard>
       </MDBCol>
       <MarkdownModal
+        text={text}
         datas={datas}
         setDatas={setDatas}
         modal={modal}

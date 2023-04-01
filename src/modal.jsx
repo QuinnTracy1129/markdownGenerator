@@ -16,11 +16,24 @@ import {
 import { toast } from "react-toastify";
 import ModalCard from "./card";
 
-export default function MarkdownModal({ datas, setDatas, modal, setModal }) {
-  const [isResponse, setIsReponse] = useState(true);
+export default function MarkdownModal({
+  datas,
+  setDatas,
+  modal,
+  setModal,
+  text,
+}) {
+  const [isResponse, setIsReponse] = useState(true),
+    [activeHover, setActiveHover] = useState("");
 
   const handleFormat = () => {
-    let table = "";
+    let table = `#### ${
+      isResponse ? "Response Body" : "Request Query"
+    } Parameters\n\n| Parameter | ${
+      !isResponse ? "Mandatory/Optional | " : ""
+    }Datatype | Min | Max | Description |\n| :- | ${
+      !isResponse ? ":-: | " : ""
+    }:-: | :-: | :-: | :- |\n`;
 
     datas.map(data => {
       let _parameter = data.parameter,
@@ -66,6 +79,10 @@ export default function MarkdownModal({ datas, setDatas, modal, setModal }) {
       return true;
     });
 
+    table += `\n\n#### Sample ${
+      isResponse ? "Response" : "Request"
+    }\n\n~~~json\n${text}\n~~~`;
+
     navigator.clipboard.writeText(table);
     toast.success("Markdown Copied to Clipboard.");
   };
@@ -82,16 +99,55 @@ export default function MarkdownModal({ datas, setDatas, modal, setModal }) {
               onClick={() => setModal(false)}
             />
           </MDBModalHeader>
-          <MDBModalBody className="text-start">
-            <MDBTable className="text-center" small>
+          <MDBModalBody>
+            <MDBTable
+              bordered
+              className="text-center caption-top"
+              small
+              align="middle"
+              hover
+            >
+              <caption className="pt-0 pb-1 text-dark">
+                You can click on&nbsp;
+                <code
+                  className="cursor-pointer"
+                  onMouseOver={() => setActiveHover("type")}
+                  onMouseOut={() => setActiveHover("")}
+                >
+                  Datatype
+                </code>
+                ,&nbsp;
+                <code
+                  className="cursor-pointer"
+                  onMouseOver={() => setActiveHover("min")}
+                  onMouseOut={() => setActiveHover("")}
+                >
+                  Min Length
+                </code>
+                &nbsp;and&nbsp;
+                <code
+                  className="cursor-pointer"
+                  onMouseOver={() => setActiveHover("max")}
+                  onMouseOut={() => setActiveHover("")}
+                >
+                  Max Length
+                </code>
+                &nbsp;values to update them.
+              </caption>
               <MDBTableHead>
                 <tr>
-                  <th>Parameter</th>
+                  <th className="text-start">Parameter</th>
                   {!isResponse && <th>Mandatory/Optional</th>}
-                  <th>Datatype</th>
-                  <th>Min Length</th>
-                  <th>Max Length</th>
-                  <th>Description</th>
+                  <th className={`${activeHover === "type" && "table-active"}`}>
+                    Datatype
+                  </th>
+                  <th className={`${activeHover === "min" && "table-active"}`}>
+                    Min Length
+                  </th>
+                  <th className={`${activeHover === "max" && "table-active"}`}>
+                    Max Length
+                  </th>
+                  <th className="text-start">Description</th>
                 </tr>
               </MDBTableHead>
               <MDBTableBody>
@@ -109,6 +165,7 @@ export default function MarkdownModal({ datas, setDatas, modal, setModal }) {
                           cIndex={cIndex}
                           datas={datas}
                           setDatas={setDatas}
+                          activeHover={activeHover}
                         />
                       ));
 
@@ -121,6 +178,7 @@ export default function MarkdownModal({ datas, setDatas, modal, setModal }) {
                           index={index}
                           datas={datas}
                           setDatas={setDatas}
+                          activeHover={activeHover}
                         />
                       );
                   }
