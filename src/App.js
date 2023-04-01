@@ -35,56 +35,53 @@ const App = () => {
 
     if (text) {
       if (isJSON(text)) {
-        const json = JSON.parse(text),
-          keys = Object.keys(json);
+        const json = JSON.parse(text);
 
-        var datas = keys.map(key => {
-          var form = {
-            parameter: key,
-            type: typeof json[key],
-            mandatory: false,
-            description: "",
-          };
+        setDatas(
+          Object.keys(json)?.map(key => {
+            let form = {
+              parameter: key,
+              type: typeof json[key],
+              mandatory: false,
+              description: "",
+            };
 
-          if (Array.isArray(json[key])) {
-            const initial = json[key][0];
+            if (Array.isArray(json[key])) {
+              const initial = json[key][0];
 
-            if (typeof initial === "object") {
-              form.type = "array";
+              if (typeof initial === "object") {
+                form.type = "array";
 
-              const children = Object.keys(initial);
+                const children = Object.keys(initial);
+
+                form.children = children.map(child => {
+                  let _form = {
+                    parameter: child,
+                    type: typeof initial[child],
+                    mandatory: false,
+                    description: "",
+                  };
+
+                  if (Array.isArray(initial[child])) {
+                    _form.type = "array";
+                  }
+
+                  return _form;
+                });
+              } else {
+                form.type = `array<${typeof initial}>`;
+              }
+            } else if (form.type === "object") {
+              const children = Object.keys(json[key]);
 
               form.children = children.map(child => {
-                var _form = {
+                let _form = {
                   parameter: child,
-                  type: typeof initial[child],
+                  type: typeof json[key][child],
                   mandatory: false,
                   description: "",
                 };
 
-                if (_form.type === "object") {
-                  if (Array.isArray(initial[child])) {
-                    _form.type = "array";
-                  }
-                }
-
-                return _form;
-              });
-            } else {
-              form.type = `array<${typeof initial}>`;
-            }
-          } else if (form.type === "object") {
-            const children = Object.keys(json[key]);
-
-            form.children = children.map(child => {
-              var _form = {
-                parameter: child,
-                type: typeof json[key][child],
-                mandatory: false,
-                description: "",
-              };
-
-              if (_form.type === "object") {
                 if (Array.isArray(json[key][child])) {
                   if (typeof json[key][child][0] === "object") {
                     _form.type = "array";
@@ -92,27 +89,22 @@ const App = () => {
                     _form.type = `array<${typeof json[key][child][0]}>`;
                   }
                 }
-              }
 
-              return _form;
-            });
-          }
+                return _form;
+              });
+            }
 
-          return form;
-        });
-
-        // console.log(datas);
-
-        setDatas(datas);
+            return form;
+          })
+        );
         setModal(true);
       } else {
-        input.focus();
         toast.warn("Invalid JSON format!");
+        input.focus();
       }
     } else {
-      input.focus();
-
       toast.warn("Paste a JSON first!");
+      input.focus();
     }
   };
 

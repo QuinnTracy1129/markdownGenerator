@@ -20,7 +20,6 @@ export default function MarkdownModal({ datas, setDatas, modal, setModal }) {
   const [isResponse, setIsReponse] = useState(true);
 
   const handleFormat = () => {
-    console.log(datas);
     let table = "";
 
     datas.map(data => {
@@ -30,7 +29,7 @@ export default function MarkdownModal({ datas, setDatas, modal, setModal }) {
       switch (data.type) {
         case "array":
         case "object":
-          data.children.map(child => {
+          data.children?.map(child => {
             let _childParameter = child.parameter;
 
             if (child.type.includes("array")) {
@@ -50,7 +49,7 @@ export default function MarkdownModal({ datas, setDatas, modal, setModal }) {
           break;
 
         default:
-          if (data.type.includes("<")) {
+          if (data.type.includes("array")) {
             _parameter += "[]";
           }
 

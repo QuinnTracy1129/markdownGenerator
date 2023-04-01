@@ -31,7 +31,7 @@ export default function ModalCard({
   const handleParameter = () => {
     var _parameter = data.parameter;
 
-    if (data.type.includes("<")) {
+    if (data.type.includes("array")) {
       _parameter += "[]";
     }
 
@@ -43,52 +43,38 @@ export default function ModalCard({
   };
 
   const handleClicks = async key => {
-    let action = "";
-
-    switch (key) {
-      case "min":
-        action = "Min Length";
-        break;
-
-      case "max":
-        action = "Max Length";
-        break;
-
-      default:
-        action = "Datatype";
-        break;
-    }
-
     const { value: str } = await Swal.fire({
-      title: `Update ${data.parameter} ${action}`,
+      title: `Update ${data.parameter} ${key}`,
       input: "text",
       inputValue: data[key],
       showCancelButton: true,
       inputValidator: value => {
-        if (key === "type") {
-          if (!value) {
-            return "You need to write something!";
-          }
-        }
-
-        if (key === "min") {
-          if (Number(value) < 0) {
-            return "Cannot set minimum less than 0!";
-          }
-
-          if (data.max) {
-            if (Number(value) > Number(data.max)) {
-              return "Minimum cannot be higher than maximum!";
+        switch (key) {
+          case "min":
+            if (Number(value) < 0) {
+              return "Cannot set minimum less than 0!";
             }
-          }
-        }
 
-        if (key === "max") {
-          if (data.min) {
-            if (Number(value) < Number(data.min)) {
-              return "Maximum cannot be lower than minimum!";
+            if (data.max) {
+              if (Number(value) > Number(data.max)) {
+                return "Minimum cannot be higher than maximum!";
+              }
             }
-          }
+            break;
+
+          case "max":
+            if (data.min) {
+              if (Number(value) < Number(data.min)) {
+                return "Maximum cannot be lower than minimum!";
+              }
+            }
+            break;
+
+          default:
+            if (!value) {
+              return "You need to write something!";
+            }
+            break;
         }
       },
     });
@@ -103,7 +89,6 @@ export default function ModalCard({
       }
 
       setDatas(newArr);
-
       toast.success("Updated Successfully!");
     }
   };
