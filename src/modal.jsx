@@ -36,14 +36,14 @@ export default function MarkdownModal({
     }:-: | :-: | :-: | :- |\n`;
 
     datas.map(data => {
-      let _parameter = data.parameter,
-        _type = "`" + data.type + "`";
+      let _parameter = data.parameter;
 
       switch (data.type) {
         case "array":
         case "object":
           data.children?.map(child => {
-            let _childParameter = child.parameter;
+            let _childParameter = child.parameter,
+              _childType = "`" + child.type + "`";
 
             if (child.type.includes("array")) {
               _childParameter += "[]";
@@ -53,7 +53,7 @@ export default function MarkdownModal({
               !isResponse
                 ? ` | ${child.mandatory ? "Mandatory" : "Optional"}`
                 : ""
-            } | ${_type} | ${child.min || "-"} | ${child.max || "-"} | ${
+            } | ${_childType} | ${child.min || "-"} | ${child.max || "-"} | ${
               child.description
             } |\n`;
 
@@ -62,6 +62,8 @@ export default function MarkdownModal({
           break;
 
         default:
+          let _type = "`" + data.type + "`";
+
           if (data.type.includes("array")) {
             _parameter += "[]";
           }
