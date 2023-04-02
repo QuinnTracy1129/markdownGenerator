@@ -85,6 +85,7 @@ export default function MarkdownModal({
 
     navigator.clipboard.writeText(table);
     toast.success("Markdown Copied to Clipboard.");
+    toast.info("Remember to double check the output before saving it.");
   };
 
   return (
