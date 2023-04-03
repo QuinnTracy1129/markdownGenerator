@@ -163,6 +163,7 @@ export default function MarkdownModal({
                           key={`${data.parameter}-${index}-${data.type}-${child.parameter}-${cIndex}-${child.type}`}
                           isResponse={isResponse}
                           parameter={data.parameter}
+                          type={data.type}
                           data={child}
                           index={index}
                           cIndex={cIndex}

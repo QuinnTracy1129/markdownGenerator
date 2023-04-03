@@ -10,6 +10,7 @@ export default function ModalCard({
   datas,
   setDatas,
   parameter,
+  type,
   cIndex,
   activeHover,
 }) {
@@ -39,7 +40,7 @@ export default function ModalCard({
     if (parameter) {
       let _param = parameter;
 
-      if (parameter.includes("array")) {
+      if (type.includes("array")) {
         _param += "[]";
       }
 
