@@ -30,6 +30,48 @@ const App = () => {
     return true;
   };
 
+  const handleJSON = obj => {
+    const newArr = [];
+    const loopObject = (obj, parameter = "") => {
+      for (let key in obj) {
+        let form = {
+          parameter: `${parameter ? `${parameter}.` : ""}${key}`,
+          type: typeof obj[key],
+          mandatory: false,
+          description: "",
+        };
+
+        if (form.type === "object") {
+          if (Array.isArray(obj[key])) {
+            // key is an array, loop through its items
+            form.type = "array";
+            form.parameter += "[]";
+
+            const initial = obj[key][0];
+
+            if (typeof initial === "object") {
+              loopObject(initial, form.parameter);
+            } else {
+              form.type = `array<${typeof initial}>`;
+              newArr.push(form);
+            }
+          } else {
+            // key is an object, call function recursively
+            loopObject(obj[key], form.parameter);
+          }
+        } else {
+          newArr.push(form);
+        }
+      }
+    };
+
+    loopObject(obj);
+
+    console.log(newArr);
+
+    setDatas(newArr);
+  };
+
   const handleGenerate = () => {
     const input = document.getElementById("text-obj");
 
@@ -37,66 +79,8 @@ const App = () => {
       if (isJSON(text)) {
         const json = JSON.parse(text);
 
-        setDatas(
-          Object.keys(json)?.map(key => {
-            let form = {
-              parameter: key,
-              type: typeof json[key],
-              mandatory: false,
-              description: "",
-            };
+        handleJSON(json);
 
-            if (Array.isArray(json[key])) {
-              const initial = json[key][0];
-
-              if (typeof initial === "object") {
-                form.type = "array";
-
-                const children = Object.keys(initial);
-
-                form.children = children.map(child => {
-                  let _form = {
-                    parameter: child,
-                    type: typeof initial[child],
-                    mandatory: false,
-                    description: "",
-                  };
-
-                  if (Array.isArray(initial[child])) {
-                    _form.type = "array";
-                  }
-
-                  return _form;
-                });
-              } else {
-                form.type = `array<${typeof initial}>`;
-              }
-            } else if (form.type === "object") {
-              const children = Object.keys(json[key]);
-
-              form.children = children.map(child => {
-                let _form = {
-                  parameter: child,
-                  type: typeof json[key][child],
-                  mandatory: false,
-                  description: "",
-                };
-
-                if (Array.isArray(json[key][child])) {
-                  if (typeof json[key][child][0] === "object") {
-                    _form.type = "array";
-                  } else {
-                    _form.type = `array<${typeof json[key][child][0]}>`;
-                  }
-                }
-
-                return _form;
-              });
-            }
-
-            return form;
-          })
-        );
         setModal(true);
       } else {
         toast.warn("Invalid JSON format!");
@@ -114,7 +98,7 @@ const App = () => {
         <MDBCard shadow="0" border="primary" background="light">
           <MDBCardHeader>JSON to Markdown Converter</MDBCardHeader>
           <MDBCardBody>
-            <MDBTypography className="mb-0">
+            <MDBTypography className="mb-0" onClick={() => console.log(datas)}>
               Paste your JSON below
             </MDBTypography>
             <MDBTypography>

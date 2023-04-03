@@ -158,39 +158,17 @@ export default function MarkdownModal({
                 </tr>
               </MDBTableHead>
               <MDBTableBody>
-                {datas.map((data, index) => {
-                  switch (data.type) {
-                    case "array":
-                    case "object":
-                      return data.children.map((child, cIndex) => (
-                        <ModalCard
-                          key={`${data.parameter}-${index}-${data.type}-${child.parameter}-${cIndex}-${child.type}`}
-                          isResponse={isResponse}
-                          parameter={data.parameter}
-                          type={data.type}
-                          data={child}
-                          index={index}
-                          cIndex={cIndex}
-                          datas={datas}
-                          setDatas={setDatas}
-                          activeHover={activeHover}
-                        />
-                      ));
-
-                    default:
-                      return (
-                        <ModalCard
-                          key={`${data.parameter}-${index}-${data.type}`}
-                          isResponse={isResponse}
-                          data={data}
-                          index={index}
-                          datas={datas}
-                          setDatas={setDatas}
-                          activeHover={activeHover}
-                        />
-                      );
-                  }
-                })}
+                {datas.map((data, index) => (
+                  <ModalCard
+                    key={`${data.parameter}-${index}-${data.type}`}
+                    isResponse={isResponse}
+                    data={data}
+                    index={index}
+                    datas={datas}
+                    setDatas={setDatas}
+                    activeHover={activeHover}
+                  />
+                ))}
               </MDBTableBody>
             </MDBTable>
           </MDBModalBody>

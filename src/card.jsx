@@ -9,9 +9,6 @@ export default function ModalCard({
   index,
   datas,
   setDatas,
-  parameter,
-  type,
-  cIndex,
   activeHover,
 }) {
   const [str, setStr] = useState("");
@@ -20,35 +17,11 @@ export default function ModalCard({
     if (str) {
       const newArr = [...datas];
 
-      if (parameter) {
-        newArr[index].children[cIndex].description = str;
-      } else {
-        newArr[index].description = str;
-      }
+      newArr[index].description = str;
 
       setDatas(newArr);
     }
   }, [str]);
-
-  const handleParameter = () => {
-    let _parameter = data.parameter;
-
-    if (data.type.includes("array")) {
-      _parameter += "[]";
-    }
-
-    if (parameter) {
-      let _param = parameter;
-
-      if (type.includes("array")) {
-        _param += "[]";
-      }
-
-      _parameter = `${_param}.${_parameter}`;
-    }
-
-    return _parameter;
-  };
 
   const handleClicks = async key => {
     let action = "",
@@ -110,11 +83,7 @@ export default function ModalCard({
     if (str) {
       const newArr = [...datas];
 
-      if (parameter) {
-        newArr[index].children[cIndex][key] = str;
-      } else {
-        newArr[index][key] = str;
-      }
+      newArr[index][key] = str;
 
       setDatas(newArr);
       toast.success("Updated Successfully!");
@@ -123,18 +92,14 @@ export default function ModalCard({
 
   return (
     <tr>
-      <td className="text-start">{handleParameter()}</td>
+      <td className="text-start">{data.parameter}</td>
       {!isResponse && (
         <td>
           <MDBSwitch
             onChange={() => {
               const newArr = [...datas];
 
-              if (parameter) {
-                newArr[index].children[cIndex].mandatory = !data.mandatory;
-              } else {
-                newArr[index].mandatory = !data.mandatory;
-              }
+              newArr[index].mandatory = !data.mandatory;
 
               setDatas(newArr);
             }}
@@ -159,7 +124,6 @@ export default function ModalCard({
       </td>
       <td>
         <MDBInput
-          label="Description"
           value={str || data.description}
           onChange={e => setStr(e.target.value)}
         />
