@@ -37,7 +37,13 @@ export default function ModalCard({
     }
 
     if (parameter) {
-      _parameter = `${parameter}.${_parameter}`;
+      let _param = parameter;
+
+      if (parameter.includes("array")) {
+        _param += "[]";
+      }
+
+      _parameter = `${_param}.${_parameter}`;
     }
 
     return _parameter;
