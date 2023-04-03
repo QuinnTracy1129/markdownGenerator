@@ -96,7 +96,7 @@ const App = () => {
         <MDBCard shadow="0" border="primary" background="light">
           <MDBCardHeader>JSON to Markdown Converter</MDBCardHeader>
           <MDBCardBody>
-            <MDBTypography className="mb-0" onClick={() => console.log(datas)}>
+            <MDBTypography className="mb-0">
               Paste your JSON below
             </MDBTypography>
             <MDBTypography>

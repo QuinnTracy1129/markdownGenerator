@@ -44,8 +44,6 @@ export default function ModalCard({
         break;
     }
 
-    console.log(data[key]);
-
     const { value: str } = await Swal.fire({
       title: `Update ${data.parameter} ${action}`,
       input,
