@@ -14,13 +14,11 @@ export default function ModalCard({
   const [str, setStr] = useState("");
 
   useEffect(() => {
-    if (str) {
-      const newArr = [...datas];
+    const newArr = [...datas];
 
-      newArr[index].description = str;
+    newArr[index].description = str;
 
-      setDatas(newArr);
-    }
+    setDatas(newArr);
   }, [str]);
 
   const handleClicks = async key => {
