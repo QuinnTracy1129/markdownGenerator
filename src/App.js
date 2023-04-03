@@ -131,6 +131,7 @@ const App = () => {
           background="light"
           className="mt-3"
         >
+          <MDBCardHeader className="pt-1 pb-0">Disclaimer</MDBCardHeader>
           <MDBCardBody className="py-1">
             <MDBCardText>
               <i>
