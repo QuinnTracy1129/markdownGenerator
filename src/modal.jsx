@@ -38,6 +38,10 @@ export default function MarkdownModal({
     datas.map(data => {
       let _parameter = data.parameter;
 
+      if (data.type.includes("array")) {
+        _parameter += "[]";
+      }
+
       switch (data.type) {
         case "array":
         case "object":
@@ -63,10 +67,6 @@ export default function MarkdownModal({
 
         default:
           let _type = "`" + data.type + "`";
-
-          if (data.type.includes("array")) {
-            _parameter += "[]";
-          }
 
           table += `| **${_parameter}**${
             !isResponse
