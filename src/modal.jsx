@@ -139,18 +139,22 @@ export default function MarkdownModal({
               </caption>
               <MDBTableHead>
                 <tr>
-                  <th className="text-start">Parameter</th>
+                  <th className="text-start">
+                    <b>Parameter</b>
+                  </th>
                   {!isResponse && <th>Mandatory/Optional</th>}
                   <th className={`${activeHover === "type" && "table-active"}`}>
-                    Datatype
+                    <b>Datatype</b>
                   </th>
                   <th className={`${activeHover === "min" && "table-active"}`}>
-                    Min Length
+                    <b>Min Length</b>
                   </th>
                   <th className={`${activeHover === "max" && "table-active"}`}>
-                    Max Length
+                    <b>Max Length</b>
                   </th>
-                  <th className="text-start">Description</th>
+                  <th className="text-start">
+                    <b>Description</b>
+                  </th>
                 </tr>
               </MDBTableHead>
               <MDBTableBody>
