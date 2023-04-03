@@ -28,8 +28,8 @@ export default function MarkdownModal({
 
   const handleFormat = () => {
     let table = `#### ${
-      isResponse ? "Response Body" : "Request Query"
-    } Parameters\n\n| Parameter | ${
+      isResponse ? "Response" : "Request"
+    } Body Parameters\n\n| Parameter | ${
       !isResponse ? "Mandatory/Optional | " : ""
     }Datatype | Min | Max | Description |\n| :- | ${
       !isResponse ? ":-: | " : ""
