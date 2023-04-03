@@ -75,9 +75,7 @@ const App = () => {
 
     if (text) {
       if (isJSON(text)) {
-        const json = JSON.parse(text);
-
-        handleJSON(json);
+        handleJSON(JSON.parse(text));
 
         setModal(true);
       } else {
