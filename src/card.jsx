@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { MDBBtn, MDBSwitch, MDBIcon, MDBInputGroup } from "mdb-react-ui-kit";
+import React, { useState, useEffect } from "react";
+import { MDBSwitch, MDBInput } from "mdb-react-ui-kit";
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
 
@@ -16,19 +16,19 @@ export default function ModalCard({
 }) {
   const [str, setStr] = useState("");
 
-  const handleSubmit = e => {
-    e.preventDefault();
+  useEffect(() => {
+    if (str) {
+      const newArr = [...datas];
 
-    const newArr = [...datas];
+      if (parameter) {
+        newArr[index].children[cIndex].description = str;
+      } else {
+        newArr[index].description = str;
+      }
 
-    if (parameter) {
-      newArr[index].children[cIndex].description = str;
-    } else {
-      newArr[index].description = str;
+      setDatas(newArr);
     }
-
-    setDatas(newArr);
-  };
+  }, [str]);
 
   const handleParameter = () => {
     let _parameter = data.parameter;
@@ -158,21 +158,11 @@ export default function ModalCard({
         </span>
       </td>
       <td>
-        <form onSubmit={handleSubmit}>
-          <MDBInputGroup>
-            <input
-              className="form-control"
-              placeholder="Description"
-              value={str || data.description}
-              onChange={e => setStr(e.target.value)}
-            />
-            {str !== data.description && (
-              <MDBBtn type="submit" outline>
-                <MDBIcon icon="pen" />
-              </MDBBtn>
-            )}
-          </MDBInputGroup>
-        </form>
+        <MDBInput
+          label="Description"
+          value={str || data.description}
+          onChange={e => setStr(e.target.value)}
+        />
       </td>
     </tr>
   );
