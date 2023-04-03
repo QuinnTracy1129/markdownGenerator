@@ -35,51 +35,17 @@ export default function MarkdownModal({
       !isResponse ? ":-: | " : ""
     }:-: | :-: | :-: | :- |\n`;
 
-    datas.map(data => {
-      let _parameter = data.parameter;
+    for (let index = 0; index < datas.length; index++) {
+      const data = datas[index];
 
-      if (data.type.includes("array")) {
-        _parameter += "[]";
-      }
+      let _type = "`" + data.type + "`";
 
-      switch (data.type) {
-        case "array":
-        case "object":
-          data.children?.map(child => {
-            let _childParameter = child.parameter,
-              _childType = "`" + child.type + "`";
-
-            if (child.type.includes("array")) {
-              _childParameter += "[]";
-            }
-
-            table += `| **${_parameter}.${_childParameter}**${
-              !isResponse
-                ? ` | ${child.mandatory ? "Mandatory" : "Optional"}`
-                : ""
-            } | ${_childType} | ${child.min || "-"} | ${child.max || "-"} | ${
-              child.description
-            } |\n`;
-
-            return true;
-          });
-          break;
-
-        default:
-          let _type = "`" + data.type + "`";
-
-          table += `| **${_parameter}**${
-            !isResponse
-              ? ` | ${data.mandatory ? "Mandatory" : "Optional"} `
-              : ""
-          } | ${_type} | ${data.min || "-"} | ${data.max || "-"} | ${
-            data.description
-          } |\n`;
-          break;
-      }
-
-      return true;
-    });
+      table += `| **${data.parameter}**${
+        !isResponse ? ` | ${data.mandatory}` : ""
+      } | ${_type} | ${data.min || "-"} | ${data.max || "-"} | ${
+        data.description
+      } |\n`;
+    }
 
     table += `\n\n#### Sample ${
       isResponse ? "Response" : "Request"
@@ -142,7 +108,11 @@ export default function MarkdownModal({
                   <th className="text-start">
                     <b>Parameter</b>
                   </th>
-                  {!isResponse && <th>Mandatory/Optional</th>}
+                  {!isResponse && (
+                    <th>
+                      <b>Mandatory/Optional</b>
+                    </th>
+                  )}
                   <th className={`${activeHover === "type" && "table-active"}`}>
                     <b>Datatype</b>
                   </th>

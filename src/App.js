@@ -37,22 +37,18 @@ const App = () => {
         let form = {
           parameter: `${parameter ? `${parameter}.` : ""}${key}`,
           type: typeof obj[key],
-          mandatory: false,
+          mandatory: "Optional",
           description: "",
         };
 
         if (form.type === "object") {
           if (Array.isArray(obj[key])) {
             // key is an array, loop through its items
-            form.type = "array";
-            form.parameter += "[]";
-
-            const initial = obj[key][0];
-
-            if (typeof initial === "object") {
-              loopObject(initial, form.parameter);
+            if (typeof obj[key][0] === "object") {
+              loopObject(obj[key][0], form.parameter);
             } else {
               form.type = `array<${typeof initial}>`;
+              form.parameter += "[]";
               newArr.push(form);
             }
           } else {
@@ -66,8 +62,6 @@ const App = () => {
     };
 
     loopObject(obj);
-
-    console.log(newArr);
 
     setDatas(newArr);
   };

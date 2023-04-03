@@ -99,11 +99,12 @@ export default function ModalCard({
             onChange={() => {
               const newArr = [...datas];
 
-              newArr[index].mandatory = !data.mandatory;
+              newArr[index].mandatory =
+                data.mandatory === "Mandatory" ? "Optional" : "Mandatory";
 
               setDatas(newArr);
             }}
-            checked={data.mandatory}
+            checked={data.mandatory === "Mandatory"}
           />
         </td>
       )}
