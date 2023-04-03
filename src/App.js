@@ -35,25 +35,29 @@ const App = () => {
     const loopObject = (obj, parameter = "") => {
       for (let key in obj) {
         let form = {
-          parameter: `${parameter ? `${parameter}.` : ""}${key}`,
+          parameter: `${parameter}${key}`,
           type: typeof obj[key],
           mandatory: "Optional",
+          min: "",
+          max: "",
           description: "",
         };
 
         if (form.type === "object") {
           if (Array.isArray(obj[key])) {
+            form.parameter += "[]";
+
             // key is an array, loop through its items
             if (typeof obj[key][0] === "object") {
-              loopObject(obj[key][0], form.parameter);
+              loopObject(obj[key][0], `${form.parameter}.`);
             } else {
-              form.type = `array<${typeof initial}>`;
-              form.parameter += "[]";
+              form.type = `array<${typeof obj[key][0]}>`;
+
               newArr.push(form);
             }
           } else {
             // key is an object, call function recursively
-            loopObject(obj[key], form.parameter);
+            loopObject(obj[key], `${form.parameter}.`);
           }
         } else {
           newArr.push(form);
