@@ -49,7 +49,7 @@ export default function MarkdownModal({
 
     table += `\n\n#### Sample ${
       isResponse ? "Response" : "Request"
-    }\n\n~~~json\n${text}\n~~~`;
+    }\n\n~~~json\n${text.trim()}\n~~~`;
 
     navigator.clipboard.writeText(table);
     toast.success("Markdown Copied to Clipboard.");
