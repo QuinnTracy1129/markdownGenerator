@@ -65,7 +65,10 @@ export default function MarkdownModal({
             <MDBBtn
               className="btn-close"
               color="none"
-              onClick={() => setModal(false)}
+              onClick={() => {
+                setIsReponse(true);
+                setModal(false);
+              }}
             />
           </MDBModalHeader>
           <MDBModalBody>
