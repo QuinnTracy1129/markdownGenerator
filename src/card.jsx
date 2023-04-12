@@ -12,8 +12,6 @@ export default function ModalCard({
   activeHover,
 }) {
   const handleClicks = async key => {
-    const newArr = [...datas];
-
     let action = "",
       input = "";
 
@@ -71,13 +69,9 @@ export default function ModalCard({
     });
 
     if (str) {
-      // console.log(newArr[index]);
-      // console.log(key, newArr[index][key]);
+      const newArr = [...datas];
 
       newArr[index][key] = str;
-
-      // console.log(newArr[index]);
-      // console.log(key, newArr[index][key]);
 
       setDatas(newArr);
       toast.success(`<${data.parameter}> ${action} Updated Successfully!`);

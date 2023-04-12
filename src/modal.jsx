@@ -27,7 +27,6 @@ export default function MarkdownModal({
     [activeHover, setActiveHover] = useState("");
 
   const handleFormat = () => {
-    console.table(datas);
     let table = `#### ${
       isResponse ? "Response" : "Request"
     } Body Parameters\n\n| Parameter | ${
