@@ -27,6 +27,7 @@ export default function MarkdownModal({
     [activeHover, setActiveHover] = useState("");
 
   const handleFormat = () => {
+    console.table(datas);
     let table = `#### ${
       isResponse ? "Response" : "Request"
     } Body Parameters\n\n| Parameter | ${
@@ -38,7 +39,7 @@ export default function MarkdownModal({
     for (let index = 0; index < datas.length; index++) {
       const data = datas[index];
 
-      let _type = "`" + data.type + "`";
+      let _type = "`" + data.datatype + "`";
 
       table += `| **${data.parameter}**${
         !isResponse ? ` | ${data.mandatory}` : ""
@@ -83,7 +84,7 @@ export default function MarkdownModal({
                 You can click on&nbsp;
                 <code
                   className="cursor-pointer"
-                  onMouseOver={() => setActiveHover("type")}
+                  onMouseOver={() => setActiveHover("datatype")}
                   onMouseOut={() => setActiveHover("")}
                 >
                   Datatype
@@ -116,7 +117,11 @@ export default function MarkdownModal({
                       <b>Mandatory/Optional</b>
                     </th>
                   )}
-                  <th className={`${activeHover === "type" && "table-active"}`}>
+                  <th
+                    className={`${
+                      activeHover === "datatype" && "table-active"
+                    }`}
+                  >
                     <b>Datatype</b>
                   </th>
                   <th className={`${activeHover === "min" && "table-active"}`}>
@@ -133,7 +138,7 @@ export default function MarkdownModal({
               <MDBTableBody>
                 {datas.map((data, index) => (
                   <ModalCard
-                    key={`${data.parameter}-${index}-${data.type}`}
+                    key={`${data.parameter}-${index}-${data.datatype}`}
                     isResponse={isResponse}
                     data={data}
                     index={index}

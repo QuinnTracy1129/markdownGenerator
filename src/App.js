@@ -36,14 +36,14 @@ const App = () => {
       for (let key in obj) {
         let form = {
           parameter: `${parameter}${key}`,
-          type: typeof obj[key],
+          datatype: typeof obj[key],
           mandatory: "Optional",
           min: "",
           max: "",
           description: "",
         };
 
-        if (form.type === "object") {
+        if (form.datatype === "object") {
           if (Array.isArray(obj[key])) {
             form.parameter += "[]";
 
@@ -51,7 +51,7 @@ const App = () => {
             if (typeof obj[key][0] === "object") {
               loopObject(obj[key][0], `${form.parameter}.`);
             } else {
-              form.type = `array<${typeof obj[key][0]}>`;
+              form.datatype = `array<${typeof obj[key][0]}>`;
 
               newArr.push(form);
             }

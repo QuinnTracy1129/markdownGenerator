@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { MDBSwitch, MDBInput } from "mdb-react-ui-kit";
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
@@ -11,17 +11,9 @@ export default function ModalCard({
   setDatas,
   activeHover,
 }) {
-  const [str, setStr] = useState("");
-
-  useEffect(() => {
+  const handleClicks = async key => {
     const newArr = [...datas];
 
-    newArr[index].description = str;
-
-    setDatas(newArr);
-  }, [str]);
-
-  const handleClicks = async key => {
     let action = "",
       input = "";
 
@@ -43,7 +35,7 @@ export default function ModalCard({
     }
 
     const { value: str } = await Swal.fire({
-      title: `Update ${data.parameter} ${action}`,
+      html: `<h4 class='mb-0'>Update <code>${data.parameter}</code> ${action}</h4>`,
       input,
       inputValue: data[key],
       showCancelButton: true,
@@ -79,12 +71,16 @@ export default function ModalCard({
     });
 
     if (str) {
-      const newArr = [...datas];
+      // console.log(newArr[index]);
+      // console.log(key, newArr[index][key]);
 
       newArr[index][key] = str;
 
+      // console.log(newArr[index]);
+      // console.log(key, newArr[index][key]);
+
       setDatas(newArr);
-      toast.success("Updated Successfully!");
+      toast.success(`<${data.parameter}> ${action} Updated Successfully!`);
     }
   };
 
@@ -106,9 +102,12 @@ export default function ModalCard({
           />
         </td>
       )}
-      <td className={`${activeHover === "type" && "table-active"}`}>
-        <code onClick={() => handleClicks("type")} className="cursor-pointer">
-          {data.type}
+      <td className={`${activeHover === "datatype" && "table-active"}`}>
+        <code
+          onClick={() => handleClicks("datatype")}
+          className="cursor-pointer"
+        >
+          {data.datatype}
         </code>
       </td>
       <td className={`${activeHover === "min" && "table-active"}`}>
@@ -123,8 +122,12 @@ export default function ModalCard({
       </td>
       <td>
         <MDBInput
-          value={str || data.description}
-          onChange={e => setStr(e.target.value)}
+          value={data.description}
+          onChange={e => {
+            const newArr = [...datas];
+            newArr[index].description = e.target.value;
+            setDatas(newArr);
+          }}
         />
       </td>
     </tr>
