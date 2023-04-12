@@ -75,6 +75,7 @@ export default function ModalCard({
 
       setDatas(newArr);
       toast.success(`<${data.parameter}> ${action} Updated Successfully!`);
+      setTimeout(() => document.getElementById(`desc-${index}`).focus(), 500);
     }
   };
 
@@ -116,11 +117,42 @@ export default function ModalCard({
       </td>
       <td>
         <MDBInput
+          id={`desc-${index}`}
           value={data.description}
           onChange={e => {
             const newArr = [...datas];
             newArr[index].description = e.target.value;
             setDatas(newArr);
+          }}
+          onKeyDown={e => {
+            if (e.ctrlKey && e.key === ",") {
+              e.preventDefault();
+              handleClicks("datatype");
+            }
+
+            if (e.ctrlKey && e.key === ".") {
+              e.preventDefault();
+              handleClicks("min");
+            }
+
+            if (e.ctrlKey && e.key === "/") {
+              e.preventDefault();
+              handleClicks("max");
+            }
+
+            if (e.ctrlKey && e.key === "Enter") {
+              e.preventDefault();
+              if (index < datas.length - 1) {
+                document.getElementById(`desc-${index + 1}`).focus();
+              }
+            }
+
+            if (e.ctrlKey && e.key === "\\") {
+              e.preventDefault();
+              if (index > 0) {
+                document.getElementById(`desc-${index - 1}`).focus();
+              }
+            }
           }}
         />
       </td>

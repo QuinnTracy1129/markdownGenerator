@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   MDBBtn,
   MDBModal,
@@ -25,6 +25,12 @@ export default function MarkdownModal({
 }) {
   const [isResponse, setIsReponse] = useState(true),
     [activeHover, setActiveHover] = useState("");
+
+  useEffect(() => {
+    if (modal) {
+      document.getElementById("desc-0").focus();
+    }
+  }, [modal]);
 
   const handleFormat = () => {
     let table = `#### ${
