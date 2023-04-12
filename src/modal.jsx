@@ -42,9 +42,9 @@ export default function MarkdownModal({
 
       table += `| **${data.parameter}**${
         !isResponse ? ` | ${data.mandatory}` : ""
-      } | ${_type} | ${data.min || "-"} | ${data.max || "-"} | ${
-        data.description
-      } |\n`;
+      } | ${_type} | ${data.min || "-"} | ${
+        data.max || "-"
+      } | ${data.description.trim()} |\n`;
     }
 
     table += `\n\n#### Sample ${

@@ -67,7 +67,12 @@ const App = () => {
 
     loopObject(obj);
 
-    setDatas(newArr);
+    if (newArr.length > 0) {
+      setDatas(newArr);
+      setModal(true);
+    } else {
+      toast.warn("Your JSON is empty!");
+    }
   };
 
   const handleGenerate = () => {
@@ -76,8 +81,6 @@ const App = () => {
     if (text) {
       if (isJSON(text)) {
         handleJSON(JSON.parse(text));
-
-        setModal(true);
       } else {
         toast.warn("Invalid JSON format!");
         input.focus();
