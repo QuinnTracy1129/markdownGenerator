@@ -36,7 +36,7 @@ const App = () => {
       for (let key in obj) {
         let form = {
           parameter: `${parameter}${key}`,
-          datatype: typeof obj[key],
+          datatype: obj[key] ? typeof obj[key] : "string",
           mandatory: "Optional",
           min: "",
           max: "",
